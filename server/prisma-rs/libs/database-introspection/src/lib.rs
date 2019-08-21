@@ -3,6 +3,7 @@
 use failure::Fail;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+use std::fmt;
 
 pub mod mysql;
 pub mod postgres;
@@ -82,7 +83,9 @@ pub struct Table {
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum IndexType {
+    /// Unique type.
     Unique,
+    /// Normal type.
     Normal,
 }
 
@@ -162,6 +165,26 @@ pub enum ColumnTypeFamily {
     TextSearch,
     /// Transaction ID types.
     TransactionId,
+}
+
+impl fmt::Display for ColumnTypeFamily {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let str = match self {
+            Self::Int => "int",
+            Self::Float => "float",
+            Self::Boolean => "boolean",
+            Self::String => "string",
+            Self::DateTime => "dateTime",
+            Self::Binary => "binary",
+            Self::Json => "json",
+            Self::Uuid => "uuid",
+            Self::Geometric => "geometric",
+            Self::LogSequenceNumber => "logSequenceNumber",
+            Self::TextSearch => "textSearch",
+            Self::TransactionId => "transactionId",
+        };
+        write!(f, "{}", str)
+    }
 }
 
 /// A column's arity.
